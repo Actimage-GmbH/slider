@@ -1,8 +1,8 @@
 {
   "name": "@sharcoux/slider",
-  "version": "5.6.1",
-  "homepage": "https://github.com/Sharcoux/slider",
-  "description": "Lightweight slider for React-Native and React-Native-Web. A Range slider is included",
+  "version": "5.6.2",
+  "homepage": "https://github.com/benedicksteve/slider",
+  "description": "Fork of Lightweight slider and rangeSlider for React-Native and React-Native-Web and react native windows",
   "keywords": [
     "react-native",
     "react",
@@ -79,7 +79,6 @@
     "webpack-dev-server": "^3.11.0"
   },
   "files": [
-    "dist/*",
     "src/*"
   ],
   "husky": {
@@ -93,10 +92,10 @@
       "git add"
     ]
   },
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "src/index.tsx",
+  "types": "src/index.d.tsx",
   "repository": {
     "type": "git",
-    "url": "git@github.com:Sharcoux/slider.git"
+    "url": "git@github.com:benedicksteve/slider.git"
   }
 }
