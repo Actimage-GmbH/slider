@@ -89,6 +89,7 @@ const Slider = React.forwardRef<RN.View, SliderProps>((props: SliderProps, forwa
       <Track color={minimumTrackTintColor} style={minStyle} length={percentage * 100} vertical={vertical} thickness={trackHeight} />
       <Thumb size={thumbSize} color={thumbTintColor} trackHeight={thumbRadius} style={thumbStyle} thumbImage={thumbImage} />
       <Track color={maximumTrackTintColor} style={maxStyle} length={(1 - percentage) * 100} vertical={vertical} thickness={trackHeight} />
+      {RN.Platform.OS === "windows" ? <Track color={"#00000000"} style={{position: "absolute", left: 0, right: 0}} length={1  * 100} vertical={vertical} thickness={trackHeight} /> : undefined }
     </ResponderView>
   )
 }
