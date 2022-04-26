@@ -24,6 +24,27 @@ const accessibility = [
   { name: 'decrement', label: 'decrement' }
 ]
 
+const styleSheet = RN.StyleSheet.create({
+  view: {
+    flexGrow: 1,
+    flexShrink: 1,
+    flexBasis: 'auto',
+    alignItems: 'center'
+  },
+  row: {
+    flexDirection: 'row'
+  },
+  rowReverse: {
+    flexDirection: 'row-reverse'
+  },
+  column: {
+    flexDirection: 'column'
+  },
+  columnReverse: {
+    flexDirection: 'column-reverse'
+  }
+})
+
 const ResponderView = React.forwardRef<RN.View, Props>(({
   vertical, inverted, enabled,
   style,
@@ -43,20 +64,27 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
   // We calculate the style of the container
   const isVertical = React.useMemo(() => vertical || (style && (RN.StyleSheet.flatten(style).flexDirection || '').startsWith('column')), [vertical, style])
   const containerStyle = React.useMemo(() => ([
-    {
-      flexGrow: 1,
-      flexShrink: 1,
-      flexBasis: 'auto',
-      flexDirection: (isVertical ? 'column' : 'row') + (inverted ? '-reverse' : ''),
-      // For web
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      userSelect: 'none',
-      alignItems: 'center',
-      cursor: 'pointer'
-    } as RN.ViewStyle,
+    styleSheet.view,
+    // This is for web
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    Platform.OS === "web" && { userSelect: 'none', cursor: 'pointer' },
+    styleSheet[(isVertical ? 'column' : 'row') + (inverted ? 'Reverse' : '') as 'row'],
     style
   ]), [style, isVertical, inverted])
+
+  const responderViewInformationRef = React.useRef<{width: number, height: number, pageX: number, pageY: number}|undefined>(undefined)
+
+  const initResponderViewInformationRef = () => {
+    forwardRef?.current?.measure((ox, oy, width, height, px, py) => {
+      responderViewInformationRef.current={
+        pageX: px,
+        pageY: py,
+        width: width,
+        height: height
+      }
+    })
+  }
 
   // Accessibility actions
   const accessibilityActions = React.useCallback((event: RN.AccessibilityActionEvent) => {
@@ -89,8 +117,19 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
 
   /** Convert a touch event into it's position on the slider */
   const eventToValue = React.useCallback((event: RN.GestureResponderEvent) => {
-    const { locationX: x, locationY: y } = event.nativeEvent
+    const { locationX: x, locationY: y, pageX: eventPageX, pageY: eventPageY } = event.nativeEvent
+
     const offset = isVertical ? y : x
+
+    if(isVertical) {
+      if(eventPageY < responderViewInformationRef.current.pageY) return minimumValue
+
+      if(eventPageY > (responderViewInformationRef.current.pageY + responderViewInformationRef.current.height)) return maximumValue
+    } else {
+      if(eventPageX < responderViewInformationRef.current.pageX) return minimumValue
+
+      if(eventPageX > (responderViewInformationRef.current.pageX+ responderViewInformationRef.current.width)) return maximumValue
+    }
     const size = containerSize.current?.[isVertical ? 'height' : 'width'] || 1
     const newValue = inverted
       ? maximumValue - ((maximumValue - minimumValue) * offset) / size
@@ -98,22 +137,48 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
     return round(newValue)
   }, [isVertical, inverted, maximumValue, minimumValue, round])
 
+  const shouldTriggerEvent = (event: RN.GestureResponderEvent) => {
+
+    const { pageY: eventPageY, pageX: eventPageX } = event.nativeEvent
+
+    if(!responderViewInformationRef.current) return false
+
+    if(isVertical && (eventPageX < responderViewInformationRef.current.pageX || eventPageX > (responderViewInformationRef.current.pageX  + responderViewInformationRef.current.width))) return false
+
+    console.log("####", eventPageY , responderViewInformationRef.current.pageY , responderViewInformationRef.current.pageY  + responderViewInformationRef.current.height)
+    if(!isVertical && (eventPageY < responderViewInformationRef.current.pageY || eventPageY > (responderViewInformationRef.current.pageY  + responderViewInformationRef.current.height))) return false
+
+    return true
+  }
+
   const onMove = React.useCallback((event: RN.GestureResponderEvent) => {
-    onMoveProp(eventToValue(event))
+    if(shouldTriggerEvent(event)) {
+      onMoveProp(eventToValue(event))
+    }
+    event.preventDefault()
   }, [eventToValue, onMoveProp])
 
   const onPress = React.useCallback((event: RN.GestureResponderEvent) => {
-    onPressProp(eventToValue(event))
+    initResponderViewInformationRef()
+
+    if(shouldTriggerEvent(event)) {
+      onPressProp(eventToValue(event))
+    }
+    event.preventDefault()
   }, [eventToValue, onPressProp])
 
   const onRelease = React.useCallback((event: RN.GestureResponderEvent) => {
-    onReleaseProp(eventToValue(event))
+    if(shouldTriggerEvent(event)) {
+      onReleaseProp(eventToValue(event))
+    }
+    event.preventDefault()
   }, [eventToValue, onReleaseProp])
 
   const isEnabled = React.useCallback(() => enabled, [enabled])
   const onLayout = React.useCallback((event: RN.LayoutChangeEvent) => {
     onLayoutProp?.(event)
     containerSize.current = event.nativeEvent.layout
+    initResponderViewInformationRef()
   }, [onLayoutProp])
 
   return <RN.View
@@ -137,5 +202,7 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
     onKeyDown={handleAccessibilityKeys}
   />
 })
+
+ResponderView.displayName = 'ResponderView'
 
 export default React.memo(ResponderView)
