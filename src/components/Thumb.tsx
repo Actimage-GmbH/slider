@@ -43,7 +43,7 @@ const Thumb = ({ color = 'darkcyan', trackHeight, size = 15, style, thumbImage }
     // This is for web
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    Platform.OS === "web" && { userSelect: 'none' },
+    RN.Platform.OS === "web" && { userSelect: 'none' },
     style
   ], [style, size, color])
 

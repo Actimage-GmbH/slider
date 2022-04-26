@@ -28,7 +28,7 @@ const Track = ({ style, thickness, length, vertical, color = 'grey' }: Props) =>
     // This is for web
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    Platform.OS === "web" && { userSelect: 'none' }
+    RN.Platform.OS === "web" && { userSelect: 'none' }
     ,style
   ], [length, thickness, color, vertical, style])
 

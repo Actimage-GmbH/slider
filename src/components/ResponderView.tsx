@@ -68,7 +68,7 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
     // This is for web
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    Platform.OS === "web" && { userSelect: 'none', cursor: 'pointer' },
+    RN.Platform.OS === "web" && { userSelect: 'none', cursor: 'pointer' },
     styleSheet[(isVertical ? 'column' : 'row') + (inverted ? 'Reverse' : '') as 'row'],
     style
   ]), [style, isVertical, inverted])
@@ -122,13 +122,13 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
     const offset = isVertical ? y : x
 
     if(isVertical) {
-      if(eventPageY < responderViewInformationRef.current.pageY) return minimumValue
+      if(eventPageY < responderViewInformationRef.current?.pageY) return minimumValue
 
-      if(eventPageY > (responderViewInformationRef.current.pageY + responderViewInformationRef.current.height)) return maximumValue
+      if(eventPageY > (responderViewInformationRef.current?.pageY + responderViewInformationRef.current?.height&&0)) return maximumValue
     } else {
-      if(eventPageX < responderViewInformationRef.current.pageX) return minimumValue
+      if(eventPageX < responderViewInformationRef.current?.pageX) return minimumValue
 
-      if(eventPageX > (responderViewInformationRef.current.pageX+ responderViewInformationRef.current.width)) return maximumValue
+      if(eventPageX > (responderViewInformationRef.current?.pageX+ responderViewInformationRef.current?.width??0)) return maximumValue
     }
     const size = containerSize.current?.[isVertical ? 'height' : 'width'] || 1
     const newValue = inverted
@@ -145,7 +145,6 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
 
     if(isVertical && (eventPageX < responderViewInformationRef.current.pageX || eventPageX > (responderViewInformationRef.current.pageX  + responderViewInformationRef.current.width))) return false
 
-    console.log("####", eventPageY , responderViewInformationRef.current.pageY , responderViewInformationRef.current.pageY  + responderViewInformationRef.current.height)
     if(!isVertical && (eventPageY < responderViewInformationRef.current.pageY || eventPageY > (responderViewInformationRef.current.pageY  + responderViewInformationRef.current.height))) return false
 
     return true
