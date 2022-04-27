@@ -163,6 +163,7 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
     if(shouldTriggerEvent(event)) {
       onPressProp(eventToValue(event))
     }
+
     event.preventDefault()
   }, [eventToValue, onPressProp])
 

@@ -18,7 +18,6 @@ function getTrackStyle (length: number, thickness: number, color: RN.ColorValue,
       backgroundColor: color,
       [vertical ? 'width' : 'height']: thickness,
     },
-
   }).thumb
 }
 

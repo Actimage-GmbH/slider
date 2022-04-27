@@ -29,7 +29,7 @@ function getThumbStyle (size: number, color: RN.ColorValue) {
       backgroundColor: color,
       zIndex: 1,
       borderRadius: size / 2,
-      overflow: 'hidden',
+      overflow: 'hidden'
     }
   }).thumb
 }

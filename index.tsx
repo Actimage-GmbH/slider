@@ -3,9 +3,38 @@ import { View, Text, StyleSheet, AppRegistry, Platform } from 'react-native'
 import { Slider, RangeSlider } from './src'
 import { name as appName } from './app.json'
 
+const styles = StyleSheet.create({
+  category: {
+    flexDirection: 'row',
+    justifyContent: 'space-around'
+  },
+  slider: {
+    width: 200,
+    height: 40,
+    flexGrow: 0,
+    borderWidth: 1,
+    borderColor: 'black',
+    borderStyle: 'solid'
+  },
+  verticalSlider: {
+    height: 200,
+    width: 40,
+    flexGrow: 0,
+    borderWidth: 1,
+    borderColor: 'black',
+    borderStyle: 'solid'
+  },
+  title: {
+    fontSize: 28,
+    margin: 20
+  }
+})
+
 const App = () => {
   const [value, setValue] = React.useState(0)
   const [range, setRange] = React.useState<[number, number]>([0, 0])
+  const [max, setMax] = React.useState(1)
+  React.useEffect(() => { setInterval(() => setMax(max => max + 1), 2000) }, [])
   return <View>
     <Text style={styles.title}>Raw Slider</Text>
     <View style={styles.category}>
@@ -17,7 +46,7 @@ const App = () => {
         inverted={true}
         slideOnTap={false}
         minimumValue={0}
-        maximumValue={1}
+        maximumValue={max}
       />
       <Slider
         style={styles.slider}
@@ -47,7 +76,7 @@ const App = () => {
         onValueChange={value => console.log('change:', value)}
         style={styles.slider}
         minimumValue={0}
-        maximumValue={1}
+        maximumValue={max}
         step={0.1}
       />
     </View>
@@ -97,33 +126,6 @@ const App = () => {
     </View>
   </View>
 }
-
-const styles = StyleSheet.create({
-  category: {
-    flexDirection: 'row',
-    justifyContent: 'space-around'
-  },
-  slider: {
-    width: 200,
-    height: 40,
-    flexGrow: 0,
-    borderWidth: 1,
-    borderColor: 'black',
-    borderStyle: 'solid'
-  },
-  verticalSlider: {
-    height: 200,
-    width: 40,
-    flexGrow: 0,
-    borderWidth: 1,
-    borderColor: 'black',
-    borderStyle: 'solid'
-  },
-  title: {
-    fontSize: 28,
-    margin: 20
-  }
-})
 
 AppRegistry.registerComponent(appName, () => App)
 
