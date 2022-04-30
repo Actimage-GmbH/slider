@@ -66,7 +66,7 @@ const useRange = ({ step, range: propValue, minimumRange, minimumValue, maximumV
     // When moving a thumb, we don't want to let it cross the other thumb
     const isMinClosest = (currentThumb.current && !crossingAllowed)
       ? currentThumb.current === 'min'
-      : Math.abs(value - minValue) < Math.abs(value - maxValue)
+      : Math.abs(value - minValue) < Math.abs(value - maxValue) || (Math.abs(value - minValue) === Math.abs(value - maxValue) && value < minValue)
     isMinClosest ? updateMinValue(value) : updateMaxValue(value)
     if (state === 'release') currentThumb.current = undefined // We release the thumb
     else if (state === 'press') currentThumb.current = isMinClosest ? 'min' : 'max' // We set the thumb being currently moved
