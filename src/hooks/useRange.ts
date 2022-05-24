@@ -64,9 +64,12 @@ const useRange = ({ step, range: propValue, minimumRange, minimumValue, maximumV
   const updateClosestValue = React.useCallback((value: number, state: 'drag' | 'press' | 'release') => {
     const [minValue, maxValue] = range
     // When moving a thumb, we don't want to let it cross the other thumb
-    const isMinClosest = (currentThumb.current && !crossingAllowed)
+    let isMinClosest = (currentThumb.current && !crossingAllowed)
       ? currentThumb.current === 'min'
       : Math.abs(value - minValue) < Math.abs(value - maxValue) || (Math.abs(value - minValue) === Math.abs(value - maxValue) && value < minValue)
+    
+    if(minValue === maxValue) isMinClosest = value < minValue
+
     isMinClosest ? updateMinValue(value) : updateMaxValue(value)
     if (state === 'release') currentThumb.current = undefined // We release the thumb
     else if (state === 'press') currentThumb.current = isMinClosest ? 'min' : 'max' // We set the thumb being currently moved
