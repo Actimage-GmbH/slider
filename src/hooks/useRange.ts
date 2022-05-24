@@ -68,7 +68,7 @@ const useRange = ({ step, range: propValue, minimumRange, minimumValue, maximumV
       ? currentThumb.current === 'min'
       : Math.abs(value - minValue) < Math.abs(value - maxValue) || (Math.abs(value - minValue) === Math.abs(value - maxValue) && value < minValue)
     
-    if(minValue === maxValue) isMinClosest = value < minValue
+    if(minValue === maxValue && state !== 'drag') isMinClosest = value < minValue
 
     isMinClosest ? updateMinValue(value) : updateMaxValue(value)
     if (state === 'release') currentThumb.current = undefined // We release the thumb
