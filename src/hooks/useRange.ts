@@ -27,7 +27,10 @@ const useRange = ({ step, range: propValue, minimumRange, minimumValue, maximumV
       // If no change, we return the previous object to avoir rerenders
       if (oldRange[0] === newRange[0] && oldRange[1] === newRange[1]) return oldRange
       // We call onValueChange as soon as the setState is over
-      setTimeout(() => onValueChangeRef.current && onValueChangeRef.current(newRange), 0)
+      //setTimeout(() => onValueChangeRef.current && onValueChangeRef.current(newRange), 0)
+      
+      // Bugfix We call onValueChange directly (resilve updateRange/onValueChange loop)
+      onValueChangeRef.current && onValueChangeRef.current(newRange)
       return newRange
     })
   }, [])
