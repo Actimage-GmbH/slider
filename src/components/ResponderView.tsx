@@ -58,7 +58,7 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
 }: Props, ref) => {
   const containerSize = React.useRef({ width: 0, height: 0 })
   const fallbackRef = React.useRef<RN.View>(null)
-  const forwardRef = (ref || fallbackRef) as RefObject<View>
+  const forwardRef = (ref || fallbackRef) as RN.RefObject<RN.View>
   const round = useRounding({ step, minimumValue, maximumValue })
 
   // We calculate the style of the container
