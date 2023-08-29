@@ -48,7 +48,7 @@ const Thumb = ({ color = 'darkcyan', trackHeight, size = 15, style, thumbImage }
   ], [style, size, color])
 
   return <RN.View pointerEvents="none" style={thumbContainerStyle}>
-    {thumbImage ? <RN.Image source={thumbImage} style={thumbViewStyle as RN.ImageStyle} /> : <RN.View style={thumbViewStyle} />}
+    {thumbImage ? <RN.Image source={thumbImage} style={thumbViewStyle as RN.ImageStyle} /> : <RN.View style={thumbViewStyle as RN.ViewStyle} />}
   </RN.View>
 }
 

@@ -58,7 +58,7 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
 }: Props, ref) => {
   const containerSize = React.useRef({ width: 0, height: 0 })
   const fallbackRef = React.useRef<RN.View>(null)
-  const forwardRef = ref || fallbackRef
+  const forwardRef = (ref || fallbackRef) as React.RefObject<RN.View>
   const round = useRounding({ step, minimumValue, maximumValue })
 
   // We calculate the style of the container
@@ -76,7 +76,7 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
   const responderViewInformationRef = React.useRef<{width: number, height: number, pageX: number, pageY: number}|undefined>(undefined)
 
   const initResponderViewInformationRef = () => {
-    forwardRef?.current?.measure((ox, oy, width, height, px, py) => {
+    forwardRef?.current?.measure((_ox : number, _oy : number, width: number, height: number, px: number, py: number) => {
       responderViewInformationRef.current={
         pageX: px,
         pageY: py,
@@ -122,13 +122,13 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
     const offset = isVertical ? y : x
 
     if(isVertical) {
-      if(eventPageY < responderViewInformationRef.current?.pageY) return minimumValue
+      if(typeof responderViewInformationRef.current?.pageY !== "undefined" && eventPageY < responderViewInformationRef.current?.pageY) return minimumValue
 
-      if(eventPageY > (responderViewInformationRef.current?.pageY + responderViewInformationRef.current?.height&&0)) return maximumValue
+      if(typeof responderViewInformationRef.current?.pageY !== "undefined" && typeof responderViewInformationRef.current?.height !== "undefined" && eventPageY > (responderViewInformationRef.current?.pageY + responderViewInformationRef.current?.height&&0)) return maximumValue
     } else {
-      if(eventPageX < responderViewInformationRef.current?.pageX) return minimumValue
+      if(typeof responderViewInformationRef.current?.pageX !== "undefined" && eventPageX < responderViewInformationRef.current?.pageX) return minimumValue
 
-      if(eventPageX > (responderViewInformationRef.current?.pageX+ responderViewInformationRef.current?.width??0)) return maximumValue
+      if(typeof responderViewInformationRef.current?.pageX !== "undefined" && typeof responderViewInformationRef.current?.width !== "undefined" && eventPageX > (responderViewInformationRef.current?.pageX+ responderViewInformationRef.current?.width??0)) return maximumValue
     }
     const size = containerSize.current?.[isVertical ? 'height' : 'width'] || 1
     const newValue = inverted
@@ -190,7 +190,7 @@ const ResponderView = React.forwardRef<RN.View, Props>(({
     accessible={true}
     accessibilityValue={accessibilityValues}
     accessibilityRole={'adjustable'}
-    style={containerStyle}
+    style={containerStyle as RN.ViewStyle}
     onStartShouldSetResponder={isEnabled}
     onMoveShouldSetResponder={isEnabled}
     onResponderGrant={onPress}
